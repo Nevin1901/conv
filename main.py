@@ -5,24 +5,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.transforms import ToTensor, Lambda
-
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.flatten = nn.Flatten()
-        self.linear_relu_stack = nn.Sequential(
-                nn.Linear(28*28, 512),
-                nn.ReLU(),
-                nn.Linear(512, 512),
-                nn.ReLU(),
-                nn.Linear(512, 10)
-                )
-
-    def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
-
+from model import Net
 
 def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -91,7 +74,7 @@ if __name__ == "__main__":
     model = Net().to(device)
     learning_rate = 1e-3
     batch_size = 64
-    epochs = 5
+    epochs = 45
 
     loss_fn = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
@@ -102,6 +85,7 @@ if __name__ == "__main__":
         train_loop(train_dataloader, model, loss_fn, optimizer)
         test_loop(test_dataloader, model, loss_fn)
 
+    torch.save(model.state_dict(), "model.pth")
     print("done")
 
     # X = torch.rand(1, 28, 28, device=device)
