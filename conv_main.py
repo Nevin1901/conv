@@ -10,6 +10,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to("cpu"), y.to("cpu")
+        print(X.shape)
         pred = model(X)
         loss = loss_fn(pred, y)
 
@@ -57,19 +58,21 @@ if __name__ == "__main__":
             )
 
     train_dataloader = DataLoader(training_data, batch_size=64, pin_memory=True)
-    test_dataloader = DataLoader(test_data, batch_size=64, pin_memory=Trye)
+    test_dataloader = DataLoader(test_data, batch_size=64, pin_memory=True)
 
     model = Conv().to(device)
+    for parameter in model.parameters():
+        print(parameter.view(parameter.size(0), -1).shape)
 
     learning_rate = 1e-3
     batch_size = 64
     epochs = 20
 
     loss_fn = nn.CrossEntropyLoss().to(device)
-    optimzier = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
     for i in range(epochs):
-        printf("Epoch {i+1}\n")
+        print(f"Epoch {i+1}\n")
         train_loop(train_dataloader, model, loss_fn, optimizer)
         test_loop(test_dataloader, model, loss_fn)
 
