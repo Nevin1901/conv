@@ -23,7 +23,7 @@ if __name__ == "__main__":
     print(image.shape)
 
     model = Net().to(device)
-    model.load_state_dict(torch.load("model.pth"))
+    model.load_state_dict(torch.load("model.pth", map_location=torch.device(device)))
 
     with torch.no_grad():
         prediction = model(image).to("cpu")
